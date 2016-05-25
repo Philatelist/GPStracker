@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TrackME</string>
+    <string name="no_sms">No SMS</string>
+    <string name="title_activity_main">TrackME</string>
+    <string name="filter_title_gpstracker">GPS Tracker</string>
+    <string name="messageText">Message Text</string>
+    <string name="dateMessage">Date message</string>
+    <string name="smsList">Sms list</string>
+</resources>
