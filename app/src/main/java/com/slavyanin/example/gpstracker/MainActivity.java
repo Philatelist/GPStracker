@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        addToolbar();
+
         btnToSmsList = (Button) findViewById(R.id.idBtnToSmsList);
 
         btnToSmsList.setOnClickListener(new View.OnClickListener() {
@@ -27,5 +30,13 @@ public class MainActivity extends AppCompatActivity{
         });
 
 
+    }
+
+    private void addToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 }
