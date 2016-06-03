@@ -1,9 +1,13 @@
 package com.slavyanin.example.gpstracker;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -20,9 +24,10 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private Drawer drawerResult;
+    Button callButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +36,30 @@ public class MainActivity extends AppCompatActivity{
 
         addToolbar();
 
+        callButton = (Button) findViewById(R.id.btnCall);
+        callButton();
+
+    }
+
+    private void callButton() {
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String a1 = "+380671234567";
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", a1, null));
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     private void addToolbar() {
@@ -66,6 +95,7 @@ public class MainActivity extends AppCompatActivity{
                 )
                 .build();
     }
+
 
     @NonNull
     private IDrawerItem[] initializeDrawerItems() {
