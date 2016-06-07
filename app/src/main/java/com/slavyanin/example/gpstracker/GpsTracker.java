@@ -1,8 +1,5 @@
 package com.slavyanin.example.gpstracker;
 
-/**
- * Created by slavyanin on 28.05.16.
- */
 public class GpsTracker {
 
     private String name;
@@ -10,12 +7,12 @@ public class GpsTracker {
     private String imei;
     private String cellNumber;
 
-    public GpsTracker(String name, String model, String imei, String cellNumber) {
-        this.name = name;
-        this.model = model;
-        this.imei = imei;
-        this.cellNumber = cellNumber;
-    }
+//    public GpsTracker(String name, String model, String imei, String cellNumber) {
+//        this.name = name;
+//        this.model = model;
+//        this.imei = imei;
+//        this.cellNumber = cellNumber;
+//    }
 
     public String getName() {
         return name;

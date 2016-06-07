@@ -11,4 +11,15 @@
     <string name="nav_menu_item_settings">Settings</string>
     <string name="nav_menu_item_gprsSettings">GPRS Settings</string>
     <string name="call">Call</string>
+    <string name="trackerPosition">Tracker position</string>
+    <string name="localPosition">Local position</string>
+    <string name="latitude">Latitude</string>
+    <string name="longtitude">Longtitude</string>
+    <string name="distance">Distance</string>
+    <string name="speed">Speed</string>
+    <string name="lastDataText">The last known mobile data in the absence of GPS data</string>
+    <string name="lac">Lac</string>
+    <string name="cid">Cid</string>
+    <string name="mnc">Mnc</string>
+    <string name="mcc">Mcc</string>
 </resources>

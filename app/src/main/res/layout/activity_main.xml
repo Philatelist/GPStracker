@@ -10,23 +10,309 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
-
-    <Button
-        android:id="@+id/idBtnToSmsList"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/tvNameTracker"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/smsList"
+        android:layout_below="@+id/toolbar"
         />
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/tvNameTracker"/>
+
+
+    <LinearLayout
+        android:id="@+id/llDataTracker"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/map"
+        >
+
+        <TextView
+            android:id="@+id/tvDataTracker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/trackerPosition"
+            />
+
+        <LinearLayout
+            android:id="@+id/LinearLayoutGpsDataTrackerText"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvLatitudeTrackerText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/latitude"
+                />
+
+            <TextView
+                android:id="@+id/tvLongtitudeTrackerText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/longtitude"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayoutGpsDataTracker"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvLatitudeTracker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/tvLongtitudeTracker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llDataLocal"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llDataTracker">
+
+        <TextView
+            android:id="@+id/tvDataLocal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/localPosition"
+            />
+
+        <LinearLayout
+            android:id="@+id/LinearLayoutGpsLocalText"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvLatitudeLocalText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/latitude"
+                />
+
+            <TextView
+                android:id="@+id/tvLongtitudeLocalText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/longtitude"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayoutGpsDataLocal"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tvLatitudeLocal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/tvLongtitudeLocal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llSpeed"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llDataLocal"
+        >
+
+        <TextView
+            android:id="@+id/tvSpeedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed"
+            />
+
+        <TextView
+            android:id="@+id/tvSpeedData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/tvSpeedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llDistanсe"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llSpeed"
+        >
+
+        <TextView
+            android:id="@+id/tvDistanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/distance"
+            />
+
+        <TextView
+            android:id="@+id/tvDistanceData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/tvDistanceValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llLastData"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llDistanсe"
+        android:baselineAligned="false"
+        android:divider="#371515">
+
+        <TextView
+            android:id="@+id/tvLastDataText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lastDataText"
+            />
+
+        <LinearLayout
+            android:id="@+id/llMobileData1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lacText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lac"
+                />
+
+            <TextView
+                android:id="@+id/lacData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/cidText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cid"/>
+
+            <TextView
+                android:id="@+id/cidData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llMobileData2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/mccText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mcc"
+                />
+
+            <TextView
+                android:id="@+id/mccData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/mncText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mnc"/>
+
+            <TextView
+                android:id="@+id/mncData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btnCall"
-        android:layout_below="@+id/idBtnToSmsList"
+        android:layout_below="@+id/llLastData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/call"
         />
-
-
 
 </RelativeLayout>

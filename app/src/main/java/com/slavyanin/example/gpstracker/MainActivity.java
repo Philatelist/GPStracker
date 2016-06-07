@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -24,10 +26,12 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private Drawer drawerResult;
     Button callButton;
+    GpsTracker oldTracker;
+    GpsTracker tracker = new GpsTracker();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,18 +39,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         addToolbar();
+        makeTracker();
+
+//        isTrackerExist();
 
         callButton = (Button) findViewById(R.id.btnCall);
         callButton();
 
     }
 
+//    private void isTrackerExist() {
+//        if (oldTracker.getName() != null && oldTracker.getModel() != null && oldTracker.getCellNumber() != null && oldTracker.getImei() != null) {
+//            makeTracker();
+//        }
+//    }
+
+    private void makeTracker() {
+        tracker.setModel("TK102");
+        tracker.setName("Motorcycle");
+        tracker.setCellNumber("+380670000000");
+        tracker.setImei("12345678901");
+    }
+
     private void callButton() {
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String a1 = "+380671234567";
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", a1, null));
+                String cellNumber = tracker.getCellNumber();
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", cellNumber, null));
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -136,5 +156,10 @@ public class MainActivity extends AppCompatActivity {
                 .withHeaderBackground(R.drawable.wall)
                 .addProfiles(profile)
                 .build();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
     }
 }
