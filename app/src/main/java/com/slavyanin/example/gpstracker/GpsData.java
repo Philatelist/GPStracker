@@ -1,16 +1,16 @@
 package com.slavyanin.example.gpstracker;
 
 public class GpsData {
-    public double latitude;
-    public double longtitude;
-    public double speed;
-    public String date;
-    public String time;
-    public String httpLink;
-    public int locationAreaCode;
-    public int cellID;
-    public int mobileCountryCode;
-    public int mobileNetworkCode;
+    public double latitude = 37.37;
+    public double longtitude = -122.04;
+    public double speed = 0;
+    public String date = "01.01.1900";
+    public String time = "00:00";
+    public String httpLink = "http://maps.google.com";
+    public int locationAreaCode = 0;
+    public int cellID = 0;
+    public int mobileCountryCode = 0;
+    public int mobileNetworkCode = 0;
 
 //    public GpsData(double latitude, double longtitude, double speed, String date, String time, String httpLink, int locationAreaCode, int cellID, int mobileCountryCode, int mobileNetworkCode) {
 //        this.latitude = latitude;

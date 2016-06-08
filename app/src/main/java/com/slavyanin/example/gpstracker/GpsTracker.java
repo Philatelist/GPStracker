@@ -2,10 +2,10 @@ package com.slavyanin.example.gpstracker;
 
 public class GpsTracker {
 
-    private String name;
-    private String model;
-    private String imei;
-    private String cellNumber;
+    private String name = "None";
+    private String model = "None";
+    private String imei = "None";
+    private String cellNumber = "None";
 
 //    public GpsTracker(String name, String model, String imei, String cellNumber) {
 //        this.name = name;

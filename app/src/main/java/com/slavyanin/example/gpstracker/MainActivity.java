@@ -3,6 +3,9 @@ package com.slavyanin.example.gpstracker;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,9 +15,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -29,9 +38,17 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private Drawer drawerResult;
+    private SupportMapFragment map;
+    private TextView trackerLatitude, trackerLongtitude, localLatitude, localLongtitude;
+    private LocationManager locationManager;
+    private GpsData gpsData = new GpsData();
+
+    private double testLatitude = gpsData.getLatitude();
+    private double testLongtitude = gpsData.getLongtitude();
+
     Button callButton;
-    GpsTracker oldTracker;
     GpsTracker tracker = new GpsTracker();
+    MySettings settings = new MySettings();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,10 +58,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addToolbar();
         makeTracker();
 
+        map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        map.getMapAsync(this);
+
 //        isTrackerExist();
 
         callButton = (Button) findViewById(R.id.btnCall);
         callButton();
+
+        //TODO Hardcode!:
+        trackerLatitude = (TextView) findViewById(R.id.tvLatitudeTracker);
+        trackerLatitude.setText(Double.toString(testLatitude));
+
+        trackerLongtitude = (TextView) findViewById(R.id.tvLongtitudeTracker);
+        trackerLongtitude.setText(Double.toString(testLongtitude));
+
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        localLatitude = (TextView) findViewById(R.id.tvLatitudeLocal);
+        localLongtitude = (TextView) findViewById(R.id.tvLongtitudeLocal);
 
     }
 
@@ -53,6 +86,85 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //            makeTracker();
 //        }
 //    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 10, 10, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 10, 10, locationListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.removeUpdates(locationListener);
+    }
+
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            showLocation(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    private void showLocation(Location location) {
+        if (location == null) {
+            return;
+        }
+        if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+            localLatitude.setText(myLatitudeFormat(location));
+            localLongtitude.setText(myLongtitudeFormat(location));
+        } else if (location.getProvider().equals(LocationManager.NETWORK_PROVIDER)) {
+            localLatitude.setText(myLatitudeFormat(location));
+            localLongtitude.setText(myLongtitudeFormat(location));
+        }
+    }
+
+    private String myLatitudeFormat(Location location) {
+        if (location == null) return "";
+        return String.format("%1$.6f", location.getLatitude());
+    }
+
+    private String myLongtitudeFormat(Location location) {
+        if (location == null) return "";
+        return String.format("%1$.6f", location.getLongitude());
+    }
 
     private void makeTracker() {
         tracker.setModel("TK102");
@@ -84,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void addToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if(toolbar != null) {
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -143,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new SecondaryDrawerItem()
                         .withName(R.string.nav_menu_item_gprsSettings)
                         .withIcon(R.drawable.ic_settings_remote_black_18dp)
-                };
+        };
     }
 
     private AccountHeader createAccountHeader() {
@@ -159,7 +271,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-
+    public void onMapReady(GoogleMap map) {
+        map.setMapType(settings.getMapType());
+        map.getUiSettings().setZoomControlsEnabled(settings.isZoomControl());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(testLatitude, testLongtitude), 17));
+        map.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red_48dp))
+                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                .position(new LatLng(testLatitude, testLongtitude)));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        map.setMyLocationEnabled(true);
     }
 }
