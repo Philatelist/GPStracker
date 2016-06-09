@@ -2,10 +2,12 @@ package com.slavyanin.example.gpstracker;
 
 public class GpsTracker {
 
-    private String name = "None";
-    private String model = "None";
-    private String imei = "None";
-    private String cellNumber = "None";
+    private String idTracker = TrackerTable.COLUMN_ID;
+    private String name = TrackerTable.COLUMN_NAME;
+    private String model = TrackerTable.COLUMN_MODEL;
+    private String imei = TrackerTable.COLUMN_IMEI;
+    private String cellNumber = TrackerTable.COLUMN_CELLNUMBER;
+    private String password = TrackerTable.COLUMN_PASSWORD;
 
 //    public GpsTracker(String name, String model, String imei, String cellNumber) {
 //        this.name = name;
@@ -13,6 +15,14 @@ public class GpsTracker {
 //        this.imei = imei;
 //        this.cellNumber = cellNumber;
 //    }
+
+    public String getIdTracker() {
+        return idTracker;
+    }
+
+    public void setIdTracker(String idTracker) {
+        this.idTracker = idTracker;
+    }
 
     public String getName() {
         return name;
@@ -44,6 +54,14 @@ public class GpsTracker {
 
     public void setCellNumber(String cellNumber) {
         this.cellNumber = cellNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

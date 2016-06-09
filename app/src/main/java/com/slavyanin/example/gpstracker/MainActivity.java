@@ -22,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -35,20 +36,25 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private Drawer drawerResult;
     private SupportMapFragment map;
-    private TextView trackerLatitude, trackerLongtitude, localLatitude, localLongtitude;
+    private TextView trackerLat, trackerLon, localLat, localLon, speed, tvDistance;
     private LocationManager locationManager;
     private GpsData gpsData = new GpsData();
 
-    private double testLatitude = gpsData.getLatitude();
-    private double testLongtitude = gpsData.getLongtitude();
+    private double testLatTracker = gpsData.getLatitude(), testLonTracker = gpsData.getLongtitude();
+    private double testLatLocal = 46.47747, testLonLocal = 30.73262;
+
+    private final LatLng TRACKER = new LatLng(testLatTracker, testLonTracker);
 
     Button callButton;
-    GpsTracker tracker = new GpsTracker();
     MySettings settings = new MySettings();
+    GpsTracker tracker = new GpsTracker();
+    Calculate calculate = new Calculate();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,37 +62,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         addToolbar();
-        makeTracker();
 
         map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
 
-//        isTrackerExist();
-
-        callButton = (Button) findViewById(R.id.btnCall);
-        callButton();
-
-        //TODO Hardcode!:
-        trackerLatitude = (TextView) findViewById(R.id.tvLatitudeTracker);
-        trackerLatitude.setText(Double.toString(testLatitude));
-
-        trackerLongtitude = (TextView) findViewById(R.id.tvLongtitudeTracker);
-        trackerLongtitude.setText(Double.toString(testLongtitude));
-
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        localLatitude = (TextView) findViewById(R.id.tvLatitudeLocal);
-        localLongtitude = (TextView) findViewById(R.id.tvLongtitudeLocal);
+        callButton();
+        fillTextView();
+
 
     }
 
-//    private void isTrackerExist() {
-//        if (oldTracker.getName() != null && oldTracker.getModel() != null && oldTracker.getCellNumber() != null && oldTracker.getImei() != null) {
-//            makeTracker();
-//        }
-//    }
+    private void fillTextView() {
+        //TODO Hardcode!:
+        trackerLat = (TextView) findViewById(R.id.tvLatitudeTracker);
+        trackerLat.setText(calculate.getFormatGPS(testLatTracker, "latitude"));
+        trackerLon = (TextView) findViewById(R.id.tvLongtitudeTracker);
+        trackerLon.setText(calculate.getFormatGPS(testLonTracker, "longtitude"));
 
+        localLat = (TextView) findViewById(R.id.tvLatitudeLocal);
+        localLat.setText(calculate.getFormatGPS(testLatLocal, "latitude"));
+
+        localLon = (TextView) findViewById(R.id.tvLongtitudeLocal);
+        localLon.setText(calculate.getFormatGPS(testLonLocal, "longtitude"));
+
+        speed = (TextView) findViewById(R.id.tvSpeedData);
+        speed.setText(": " + String.format("%.3f", gpsData.getSpeed()) + " km/h");
+
+        tvDistance = (TextView) findViewById(R.id.tvDistanceData);
+        tvDistance.setText(": " + String.format("%.3f", getDistance(testLatTracker, testLonTracker, testLatLocal, testLonLocal)) + " km");
+    }
+
+    private double getDistance(double lat1, double long1, double lat2, double long2) {
+        calculate.setDistance(lat1, long1, lat2, long2);
+        return calculate.getDistance();
+    }
 
     @Override
     protected void onResume() {
@@ -129,17 +140,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-
         }
     };
 
@@ -148,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            localLatitude.setText(myLatitudeFormat(location));
-            localLongtitude.setText(myLongtitudeFormat(location));
+            localLat.setText(myLatitudeFormat(location));
+            localLon.setText(myLongtitudeFormat(location));
         } else if (location.getProvider().equals(LocationManager.NETWORK_PROVIDER)) {
-            localLatitude.setText(myLatitudeFormat(location));
-            localLongtitude.setText(myLongtitudeFormat(location));
+            localLat.setText(myLatitudeFormat(location));
+            localLon.setText(myLongtitudeFormat(location));
         }
     }
 
@@ -166,14 +174,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return String.format("%1$.6f", location.getLongitude());
     }
 
-    private void makeTracker() {
-        tracker.setModel("TK102");
-        tracker.setName("Motorcycle");
-        tracker.setCellNumber("+380670000000");
-        tracker.setImei("12345678901");
-    }
-
     private void callButton() {
+        callButton = (Button) findViewById(R.id.btnCall);
+
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,13 +275,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap map) {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(TRACKER)
+                .zoom(settings.getMapZoom())
+                .bearing(settings.getMapBearing())
+                .tilt(settings.getMapTilt())
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         map.setMapType(settings.getMapType());
-        map.getUiSettings().setZoomControlsEnabled(settings.isZoomControl());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(testLatitude, testLongtitude), 17));
-        map.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red_48dp))
+        map.getUiSettings().setCompassEnabled(settings.isMapCompas());
+        map.getUiSettings().setZoomControlsEnabled(settings.isMapZoomControl());
+        map.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_red_18dp))
                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                .position(new LatLng(testLatitude, testLongtitude)));
+                .position(new LatLng(testLatTracker, testLonTracker)));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -289,6 +298,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        map.setMyLocationEnabled(true);
+        map.setMyLocationEnabled(settings.isMyLocation());
     }
 }
