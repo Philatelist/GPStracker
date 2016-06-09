@@ -91,12 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         speed.setText(": " + String.format("%.3f", gpsData.getSpeed()) + " km/h");
 
         tvDistance = (TextView) findViewById(R.id.tvDistanceData);
-        tvDistance.setText(": " + String.format("%.3f", getDistance(testLatTracker, testLonTracker, testLatLocal, testLonLocal)) + " km");
-    }
-
-    private double getDistance(double lat1, double long1, double lat2, double long2) {
-        calculate.setDistance(lat1, long1, lat2, long2);
-        return calculate.getDistance();
+        tvDistance.setText(": " + String.format("%.3f", calculate.getDistance(testLatTracker, testLonTracker, testLatLocal, testLonLocal)) + " km");
     }
 
     @Override

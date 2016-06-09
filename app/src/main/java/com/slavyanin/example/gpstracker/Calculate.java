@@ -21,7 +21,12 @@ public class Calculate {
 
     MySettings settings = new MySettings();
 
-    public double getDistance() {
+    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
+        this.latitude1 = lat1;
+        this.latitude2 = lat2;
+        this.longitude1 = lon1;
+        this.longtitude2 = lon2;
+
         deltaLatitude = Math.toRadians(latitude2 - latitude1);
         deltaLongtitude = Math.toRadians(longtitude2 - longitude1);
 
@@ -36,13 +41,6 @@ public class Calculate {
         c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         distance = c * radius;
         return distance;
-    }
-
-    public void setDistance(double latitude1, double longitude1, double latitude2, double longtitude2) {
-        this.latitude1 = latitude1;
-        this.latitude2 = latitude2;
-        this.longitude1 = longitude1;
-        this.longtitude2 = longtitude2;
     }
 
     public String getFormatGPS(double coordinate, String wsg) {
